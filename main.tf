@@ -10,6 +10,10 @@ module "home_automation" {
 
 module "treythomas_me" {
   source = "./treythomas.me"
-  subdomain_delegations = ["home"]
-  subdomain_delegations_ns = ["${join(",", module.home_automation.name_servers)}"]
+  hosted_zone_id = "${aws_route53_zone.treythomas_me.zone_id}"
+}
+
+module "metrics" {
+  source = "./metrics"
+  parent_domain = "treythomas.me"
 }

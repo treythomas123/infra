@@ -1,66 +1,20 @@
-resource "aws_route53_zone" "treythomas_me" {
-  name = "treythomas.me."
-}
-
 resource "aws_route53_record" "cloudfront" {
-  zone_id = "${aws_route53_zone.treythomas_me.zone_id}"
+  zone_id = "${var.hosted_zone_id}"
   name = ""
   type = "A"
 
   alias {
-    name = "d23n7gsn7ur5s9.cloudfront.net."
-    zone_id = "Z2FDTNDATAQYW2"
+    name = "${aws_cloudfront_distribution.treythomas_me.domain_name}."
+    zone_id = "${aws_cloudfront_distribution.treythomas_me.hosted_zone_id}"
     evaluate_target_health = false
   }
 }
 
 resource "aws_route53_record" "cloudfront_www" {
-  zone_id = "${aws_route53_zone.treythomas_me.zone_id}"
+  zone_id = "${var.hosted_zone_id}"
   name = "www"
   type = "CNAME"
   ttl = "300"
-  records = ["d23n7gsn7ur5s9.cloudfront.net."]
+  records = ["${aws_cloudfront_distribution.treythomas_me.domain_name}."]
 }
 
-resource "aws_route53_record" "mx" {
-  zone_id = "${aws_route53_zone.treythomas_me.zone_id}"
-  name = ""
-  type = "MX"
-  ttl = "1800"
-  records = [
-    "10 mx1.privateemail.com",
-    "10 mx2.privateemail.com",
-  ]
-}
-
-resource "aws_route53_record" "mail_txt" {
-  zone_id = "${aws_route53_zone.treythomas_me.zone_id}"
-  name = ""
-  type = "TXT"
-  ttl = "1800"
-  records = ["v=spf1 include:spf.privateemail.com ~all"]
-}
-
-resource "aws_route53_record" "mail_cname" {
-  zone_id = "${aws_route53_zone.treythomas_me.zone_id}"
-  name = "mail"
-  type = "CNAME"
-  ttl = "1800"
-  records = ["privateemail.com."]
-}
-
-resource "aws_route53_record" "mail_autodiscover_cname" {
-  zone_id = "${aws_route53_zone.treythomas_me.zone_id}"
-  name = "autodiscover"
-  type = "CNAME"
-  ttl = "1800"
-  records = ["privateemail.com."]
-}
-
-resource "aws_route53_record" "mail_autoconfig_cname" {
-  zone_id = "${aws_route53_zone.treythomas_me.zone_id}"
-  name = "autoconfig"
-  type = "CNAME"
-  ttl = "1800"
-  records = ["privateemail.com."]
-}
